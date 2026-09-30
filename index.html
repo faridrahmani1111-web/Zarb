@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>پنالتی ضرب | آموزگار خانم کیوانی</title>
+<style>
+*{box-sizing:border-box}
+:root{
+ --grass:#17652f;--grass2:#1d7738;--panel:rgba(8,14,22,.92);
+ --gold:#ffd447;--red:#e83d42;--cyan:#45d8ff;
+}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#071018;font-family:Tahoma,Arial,sans-serif;color:#fff}
+button{font-family:inherit}
+#game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#071018}
+.sky{position:absolute;inset:0 0 48% 0;background:
+ radial-gradient(circle at 50% 22%,rgba(255,255,255,.16),transparent 24%),
+ linear-gradient(#0b1b31,#1d3850 62%,#294557)}
+.sky:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,transparent 20%,rgba(0,0,0,.48) 100%)}
+.stadium{position:absolute;top:29%;left:0;width:100%;height:18%;background:
+ repeating-linear-gradient(90deg,#17232d 0 18px,#263743 18px 36px);
+ box-shadow:0 -10px 25px rgba(0,0,0,.4),0 15px 30px rgba(0,0,0,.45)}
+.stadium:before{content:"";position:absolute;left:4%;right:4%;top:14%;height:10%;background:#cfd9df;opacity:.7;filter:blur(2px);box-shadow:0 0 25px #fff}
+.crowd{position:absolute;inset:38% 0 0;background:
+ radial-gradient(circle,#f5d56b 0 2px,transparent 3px) 0 0/25px 25px,
+ radial-gradient(circle,#e9edf0 0 2px,transparent 3px) 12px 8px/28px 28px;
+ opacity:.35}
+.light{position:absolute;top:5%;width:9vw;height:1.2vw;min-height:8px;background:#fff;border-radius:50%;box-shadow:0 0 30px 12px rgba(255,255,220,.7)}
+.light.l{left:7%}.light.r{right:7%}
+.field{position:absolute;left:-18%;right:-18%;top:42%;bottom:-20%;
+ background:repeating-linear-gradient(90deg,#17652f 0 8vw,#1d7738 8vw 16vw);
+ transform:perspective(700px) rotateX(19deg);
+ transform-origin:50% 0;
+ box-shadow:inset 0 20px 50px rgba(0,0,0,.2)}
+.field:before{content:"";position:absolute;left:25%;right:25%;top:13%;height:34%;border:3px solid rgba(255,255,255,.65);border-bottom:0}
+.field:after{content:"";position:absolute;left:44%;top:13%;width:12%;height:24%;border:3px solid rgba(255,255,255,.45);border-bottom:0}
+.goal{position:absolute;z-index:8;top:29%;left:50%;width:min(55vw,620px);height:min(25vw,270px);transform:translateX(-50%);filter:drop-shadow(0 18px 20px rgba(0,0,0,.5))}
+.goal-depth{position:absolute;inset:0;border:8px solid #f3f5f6;background:
+ repeating-linear-gradient(0deg,transparent 0 22px,rgba(255,255,255,.28) 23px 25px),
+ repeating-linear-gradient(90deg,transparent 0 22px,rgba(255,255,255,.28) 23px 25px);
+ transform:skewX(-8deg) translateY(13px);opacity:.55}
+.post{position:absolute;background:linear-gradient(90deg,#fff,#b8c0c7,#fff);box-shadow:0 0 8px #fff}
+.post.left{left:0;top:0;width:9px;height:100%}.post.right{right:0;top:0;width:9px;height:100%}
+.post.top{left:0;right:0;top:0;height:10px}
+.netfront{position:absolute;inset:9px;background:
+ linear-gradient(45deg,transparent 47%,rgba(255,255,255,.42) 48% 51%,transparent 52%) 0 0/28px 28px,
+ linear-gradient(-45deg,transparent 47%,rgba(255,255,255,.42) 48% 51%,transparent 52%) 0 0/28px 28px;
+ border:1px solid rgba(255,255,255,.3);transform:perspective(500px) rotateX(3deg)}
+.shadow{position:absolute;z-index:6;left:50%;top:67%;width:27%;height:5%;transform:translateX(-50%);background:rgba(0,0,0,.42);filter:blur(10px);border-radius:50%}
+
+/* Detailed goalkeeper */
+.keeper{position:absolute;z-index:20;left:50%;top:43%;width:150px;height:230px;transform:translateX(-50%);transition:filter .25s}
+.keeper .head{position:absolute;z-index:6;left:42px;top:0;width:67px;height:73px;border-radius:46% 46% 48% 48%;background:linear-gradient(120deg,#d9966a,#a95e3c);border:3px solid #613522;box-shadow:inset -8px -10px 15px rgba(80,30,10,.2)}
+.keeper.child .head{background:linear-gradient(120deg,#f2b37d,#bd704a);width:62px;height:66px;left:45px}
+.keeper.old .head{background:linear-gradient(120deg,#c98763,#8e5039)}
+.hair{position:absolute;left:2px;right:2px;top:-5px;height:28px;border-radius:45% 45% 20% 20%;background:#222}
+.child .hair{background:#3b2419;height:22px}.old .hair{background:#e4e1d9}
+.ear{position:absolute;top:28px;width:12px;height:21px;background:#b66c4a;border-radius:50%;border:2px solid #7c412d}
+.ear.l{left:-9px}.ear.r{right:-9px}
+.brow{position:absolute;top:27px;width:19px;height:5px;background:#48271b;border-radius:5px;transition:.2s}
+.brow.l{left:12px;transform:rotate(8deg)}.brow.r{right:12px;transform:rotate(-8deg)}
+.old .brow{background:#d7d0c5}
+.eye{position:absolute;top:35px;width:13px;height:10px;background:#fff;border-radius:50%;border:2px solid #5c3021}
+.eye:after{content:"";position:absolute;width:5px;height:5px;left:2px;top:1px;border-radius:50%;background:#111}
+.eye.l{left:12px}.eye.r{right:12px}
+.nose{position:absolute;left:29px;top:38px;width:10px;height:19px;border-right:3px solid rgba(90,35,20,.55);border-bottom:2px solid rgba(90,35,20,.4);border-radius:0 0 8px 0}
+.mouth{position:absolute;left:19px;top:55px;width:29px;height:9px;border-bottom:3px solid #551b18;border-radius:50%;transition:.2s}
+.beard{display:none}.old .beard{display:block;position:absolute;left:11px;top:51px;width:45px;height:23px;background:#eeeae0;border-radius:5px 5px 45% 45%;z-index:-1}
+.old .mouth{top:57px}.child .mouth{top:49px}
+.body{position:absolute;top:62px;left:27px;width:96px;height:108px;border-radius:27px 27px 15px 15px;background:linear-gradient(100deg,#143f93,#2372c9 55%,#0d3278);border:3px solid #0a2558;box-shadow:inset -10px 0 20px rgba(0,0,0,.25)}
+.number{position:absolute;left:35px;top:17px;font-size:28px;font-weight:900;color:#fff;opacity:.9}
+.shoulder{position:absolute;top:66px;width:48px;height:35px;border-radius:25px;background:#184a9e;z-index:1}
+.shoulder.l{left:0;transform:rotate(-20deg)}.shoulder.r{right:0;transform:rotate(20deg)}
+.arm{position:absolute;top:85px;width:31px;height:92px;background:linear-gradient(#1c5bb3,#123d87);border-radius:20px;z-index:2;transform-origin:top}
+.arm.l{left:2px;transform:rotate(17deg)}.arm.r{right:2px;transform:rotate(-17deg)}
+.glove{position:absolute;top:160px;width:39px;height:35px;border-radius:45%;background:linear-gradient(#f8fbff,#bfc9d4);border:2px solid #74808a;z-index:5}
+.glove.l{left:-7px}.glove.r{right:-7px}
+.leg{position:absolute;top:164px;width:36px;height:78px;background:linear-gradient(#173e82,#0b285c);border-radius:12px;z-index:1}
+.leg.l{left:39px}.leg.r{right:39px}
+.boot{position:absolute;top:224px;width:48px;height:22px;background:#111;border-radius:12px;z-index:3}
+.boot.l{left:23px}.boot.r{right:23px}
+
+/* Anger */
+.keeper.anger1 .head{filter:saturate(1.25)} .keeper.anger1 .brow.l{transform:rotate(-18deg)} .keeper.anger1 .brow.r{transform:rotate(18deg)}
+.keeper.anger2 .head{background:linear-gradient(120deg,#ee765d,#bb302e);filter:saturate(1.5)}
+.keeper.anger2 .brow.l{transform:rotate(-28deg)} .keeper.anger2 .brow.r{transform:rotate(28deg)}
+.keeper.anger2 .mouth{top:57px;height:5px;border-bottom:5px solid #3b1010}
+.keeper.diveL{animation:diveL .72s cubic-bezier(.2,.7,.2,1) forwards}.keeper.diveR{animation:diveR .72s cubic-bezier(.2,.7,.2,1) forwards}.keeper.diveC{animation:diveC .65s ease forwards}
+@keyframes diveL{to{transform:translateX(-50%) translate(-155px,35px) rotate(-58deg)}}@keyframes diveR{to{transform:translateX(-50%) translate(155px,35px) rotate(58deg)}}@keyframes diveC{45%{transform:translateX(-50%) translateY(-45px)}100%{transform:translateX(-50%) translateY(5px)}}
+.keeper.laugh .mouth{top:52px;height:17px;border:0;background:#3a1111;border-radius:0 0 15px 15px}
+.keeper.laugh{animation:laugh .25s 2 alternate}
+@keyframes laugh{to{transform:translateX(-50%) translateY(-3px)}}
+
+/* ball */
+.ball{position:absolute;z-index:30;left:50%;bottom:13%;width:48px;height:48px;transform:translateX(-50%);border-radius:50%;background:
+radial-gradient(circle at 50% 52%,#20252b 0 5px,transparent 6px),
+radial-gradient(circle at 50% 12%,#20252b 0 5px,transparent 6px),
+radial-gradient(circle at 13% 70%,#20252b 0 5px,transparent 6px),
+radial-gradient(circle at 87% 70%,#20252b 0 5px,transparent 6px),
+#f4f5f5;border:2px solid #a9afb4;box-shadow:0 6px 12px rgba(0,0,0,.4)}
+.ball.kickL{animation:kickL .7s forwards}.ball.kickR{animation:kickR .7s forwards}.ball.kickC{animation:kickC .7s forwards}
+@keyframes kickL{to{transform:translate(-260px,-360px) rotate(1000deg) scale(.35)}}@keyframes kickR{to{transform:translate(220px,-360px) rotate(1000deg) scale(.35)}}@keyframes kickC{to{transform:translate(-50%,-410px) rotate(1000deg) scale(.35)}}
+
+/* UI */
+.top{position:absolute;z-index:80;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:10px}
+.badge{padding:10px 15px;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(3,9,16,.68);backdrop-filter:blur(12px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.title{font-size:18px;font-weight:900}.sub{font-size:12px;color:#b8c6d2;margin-top:3px}
+.progress{position:absolute;z-index:81;top:82px;left:50%;transform:translateX(-50%);display:flex;gap:7px}
+.dot{width:13px;height:13px;border-radius:50%;background:#47525b;box-shadow:0 0 0 2px rgba(255,255,255,.1)}
+.dot.on{background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.dot.win{background:#38df83}
+.timer{position:absolute;z-index:90;top:102px;left:50%;transform:translateX(-50%);width:min(360px,55vw);height:9px;background:rgba(0,0,0,.55);border-radius:10px;overflow:hidden;display:none}
+.timerbar{height:100%;width:100%;background:linear-gradient(90deg,#ff4545,#ffd447);transform-origin:right}
+.questionBox{position:absolute;z-index:90;bottom:18px;left:50%;transform:translateX(-50%);width:min(720px,94vw);padding:17px;border-radius:24px;background:var(--panel);border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 55px rgba(0,0,0,.5);backdrop-filter:blur(16px)}
+.question{font-size:33px;text-align:center;font-weight:1000;margin:0 0 14px;text-shadow:0 3px 8px #000}
+.options{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:14px;
+ direction:ltr;
+}
+.option{
+ position:relative;
+ min-height:68px;
+ border:3px solid rgba(255,255,255,.85);
+ border-radius:18px;
+ padding:10px 8px;
+ font-size:30px;
+ line-height:1;
+ font-weight:1000;
+ color:#ffffff;
+ background:linear-gradient(180deg,#347fd0 0%,#174b91 100%);
+ text-shadow:0 3px 4px rgba(0,0,0,.7);
+ box-shadow:
+   0 5px 0 #0a2853,
+   0 10px 20px rgba(0,0,0,.35),
+   inset 0 2px 0 rgba(255,255,255,.4);
+ cursor:pointer;
+ transition:transform .12s,filter .12s,box-shadow .12s;
+ -webkit-tap-highlight-color:transparent;
+}
+.option:before{
+ content:"";
+ position:absolute;
+ left:8px;
+ right:8px;
+ top:6px;
+ height:35%;
+ border-radius:12px;
+ background:rgba(255,255,255,.14);
+ pointer-events:none;
+}
+.option:hover{
+ transform:translateY(-3px);
+ filter:brightness(1.15);
+}
+.option:active{
+ transform:translateY(3px);
+ box-shadow:0 2px 0 #0a2853,0 5px 10px rgba(0,0,0,.3);
+}
+.option.correct{
+ background:linear-gradient(180deg,#28db78 0%,#078844 100%)!important;
+ border-color:#d9ffe9!important;
+ box-shadow:0 5px 0 #045b2c,0 10px 25px rgba(0,255,120,.3)!important;
+}
+.option.wrong{
+ background:linear-gradient(180deg,#ff6067 0%,#a91625 100%)!important;
+ border-color:#ffe2e2!important;
+ box-shadow:0 5px 0 #68101b,0 10px 25px rgba(255,40,50,.3)!important;
+}
+@media(max-width:600px){
+ .options{gap:10px}
+ .option{
+   min-height:64px;
+   font-size:28px;
+   border-width:2px;
+   border-radius:16px;
+ }
+}
+.message{position:absolute;z-index:120;left:50%;top:48%;transform:translate(-50%,-50%) scale(.65);font-size:clamp(30px,5vw,60px);font-weight:1000;text-shadow:0 7px 22px #000;opacity:0;pointer-events:none;transition:.22s}.message.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.overlay{position:absolute;z-index:200;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(30,71,105,.35),rgba(2,7,12,.96));padding:20px}
+.card{width:min(620px,94vw);padding:32px;border-radius:30px;background:rgba(8,15,23,.94);border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 100px #000;text-align:center}
+.card .logo{font-size:70px;filter:drop-shadow(0 8px 15px rgba(0,0,0,.4))}
+.card h1{margin:5px 0 10px;font-size:clamp(30px,7vw,48px)}.card p{line-height:2;color:#dce5ea}.start{border:0;border-radius:18px;padding:15px 40px;font-size:22px;font-weight:900;background:linear-gradient(135deg,#ffd94b,#e79d00);color:#211700;box-shadow:0 10px 25px rgba(255,190,20,.25);cursor:pointer}
+.hidden{display:none!important}
+@media(max-width:600px){
+ .goal{top:31%;width:74vw;height:34vw}.keeper{top:43%;transform:translateX(-50%) scale(.72);transform-origin:top center}.ball{bottom:18%;width:40px;height:40px}
+ .question{font-size:25px}.option{font-size:18px;padding:12px 4px}.questionBox{bottom:10px}.top .right{display:none}
+}
+</style>
+</head>
+<body>
+<div id="game">
+<div class="sky"></div><div class="light l"></div><div class="light r"></div><div class="stadium"></div><div class="crowd"></div>
+<div class="field"></div><div class="goal"><div class="goal-depth"></div><div class="netfront"></div><div class="post left"></div><div class="post right"></div><div class="post top"></div></div>
+<div class="shadow"></div>
+
+<div class="keeper child" id="keeper">
+ <div class="head"><div class="hair"></div><div class="ear l"></div><div class="ear r"></div><div class="brow l"></div><div class="brow r"></div><div class="eye l"></div><div class="eye r"></div><div class="nose"></div><div class="mouth"></div></div>
+ <div class="body"><div class="number">1</div></div><div class="shoulder l"></div><div class="shoulder r"></div><div class="arm l"></div><div class="arm r"></div><div class="glove l"></div><div class="glove r"></div><div class="leg l"></div><div class="leg r"></div><div class="boot l"></div><div class="boot r"></div>
+</div>
+<div class="ball" id="ball"></div>
+
+<div class="top">
+ <div class="badge"><div class="title">⚽ پنالتیِ ضرب</div><div class="sub" id="stage">حریف اول · کودک</div></div>
+ <div class="badge"><div class="title">آموزگار خانم کیوانی</div><div class="sub">بازی آموزشی جدول ضرب</div></div>
+</div>
+<div class="progress"><span class="dot" id="d1"></span><span class="dot" id="d2"></span><span class="dot" id="d3"></span></div>
+<div class="timer" id="timer"><div class="timerbar" id="timerbar"></div></div>
+
+<div class="questionBox">
+ <div class="question" id="question">برای شروع آماده‌ای؟</div>
+ <div style="text-align:center;color:#dce8f0;font-size:13px;font-weight:700;margin:-5px 0 10px">یکی از سه پاسخ را انتخاب کن 👇</div>
+ <div class="options" id="options"></div>
+</div>
+<div class="message" id="message"></div>
+
+<div class="overlay" id="start">
+ <div class="card">
+  <div class="logo">🥅⚽</div><h1>پنالتیِ ضرب</h1>
+  <p>سه دروازه‌بان را به چالش بکش.<br><b>کودک → جوان → پیرمرد</b><br>برای شکست هر حریف باید ۳ پاسخ درستِ پشت‌سرهم بدهی.</p>
+  <button class="start" onclick="startGame()">شروع مسابقه ⚡</button>
+ </div>
+</div>
+<div class="overlay hidden" id="end">
+ <div class="card"><div class="logo">🏆</div><h1>قهرمان شدی!</h1><p id="final"></p><button class="start" onclick="location.reload()">مسابقه دوباره 🔄</button></div>
+</div>
+</div>
+
+<script>
+const stages=[
+ {name:"حریف اول · کودک", cls:"child", min:1,max:3,time:false},
+ {name:"حریف دوم · جوان", cls:"young", min:4,max:9,time:false},
+ {name:"حریف سوم · پیرمرد", cls:"old", min:1,max:9,time:true}
+];
+let si=0,streak=0,answer=0,locked=false,timerId=null;
+
+const $=id=>document.getElementById(id);
+const keeper=$("keeper"),ball=$("ball"),question=$("question"),options=$("options"),stage=$("stage"),timer=$("timer"),timerbar=$("timerbar");
+
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function msg(t,ms=800){$("message").textContent=t;$("message").classList.add("show");setTimeout(()=>$("message").classList.remove("show"),ms)}
+function resetAnim(){keeper.classList.remove("diveL","diveR","diveC","laugh");ball.classList.remove("kickL","kickR","kickC");void keeper.offsetWidth;void ball.offsetWidth}
+function setKeeper(){keeper.className="keeper "+stages[si].cls;if(streak===1)keeper.classList.add("anger1");if(streak>=2)keeper.classList.add("anger2")}
+function dots(){["d1","d2","d3"].forEach((x,i)=>$(x).className="dot "+(i<streak?"on":""))}
+
+function questionNext(){
+ locked=false;resetAnim();setKeeper();dots();
+ const s=stages[si],a=rnd(s.min,s.max),b=rnd(s.min,s.max);answer=a*b;
+ question.textContent=`${a} × ${b} = ؟`;
+ let arr=[answer];
+ while(arr.length<3){let n=answer+rnd(-9,9);if(n>0&&!arr.includes(n))arr.push(n)}
+ arr.sort(()=>Math.random()-.5);options.innerHTML="";
+ arr.forEach(n=>{let b=document.createElement("button");b.className="option";b.textContent=n;b.onclick=()=>check(n,b);options.appendChild(b)});
+ if(s.time)startTimer();else{stopTimer();timer.style.display="none"}
+}
+function startTimer(){
+ stopTimer();timer.style.display="block";timerbar.style.transition="none";timerbar.style.transform="scaleX(1)";void timerbar.offsetWidth;
+ timerbar.style.transition="transform 3s linear";timerbar.style.transform="scaleX(0)";
+ timerId=setTimeout(()=>{if(!locked){locked=true;msg("⏱️ زمان تمام شد!",850);wrong()}},3000);
+}
+function stopTimer(){if(timerId){clearTimeout(timerId);timerId=null}}
+function check(n,b){
+ if(locked)return;locked=true;stopTimer();document.querySelectorAll(".option").forEach(x=>x.disabled=true);
+ if(n===answer){b.classList.add("correct");correct()}else{b.classList.add("wrong");document.querySelectorAll(".option").forEach(x=>{if(+x.textContent===answer)x.classList.add("correct")});wrong()}
+}
+function shot(){
+ const dirs=["L","R","C"],d=dirs[rnd(0,2)];ball.classList.add("kick"+d);setTimeout(()=>keeper.classList.add("dive"+(d==="L"?"R":d==="R"?"L":"C")),180)
+}
+function correct(){
+ streak++;dots();setKeeper();shot();msg("⚽ گــــل! 🔥",750);
+ if(streak===3)setTimeout(winStage,950);else setTimeout(questionNext,1050)
+}
+function wrong(){
+ streak=0;dots();keeper.classList.remove("anger1","anger2");keeper.classList.add("laugh");msg("😂 هه هه! اشتباه!",900);setTimeout(questionNext,1250)
+}
+function winStage(){
+ msg("🏆 حریف شکست خورد!",1100);["d1","d2","d3"].forEach(x=>$(x).classList.add("win"));si++;streak=0;
+ if(si>=3){setTimeout(finish,1300);return}
+ setTimeout(()=>{stage.textContent=stages[si].name;questionNext()},1300)
+}
+function finish(){stopTimer();$("final").innerHTML="هر سه دروازه‌بان را شکست دادی!<br><br>👦 کودک ✓ &nbsp; 🧑 جوان ✓ &nbsp; 👴 پیرمرد ✓<br><br><b>آفرین قهرمان جدول ضرب 🌟</b><br><br>سازنده: آموزگار خانم کیوانی";$("end").classList.remove("hidden")}
+function startGame(){$("start").classList.add("hidden");si=0;streak=0;stage.textContent=stages[0].name;questionNext()}
+</script>
+</body>
+</html>
